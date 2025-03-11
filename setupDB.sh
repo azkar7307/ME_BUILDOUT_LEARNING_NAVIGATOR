@@ -6,7 +6,7 @@
 
 DB_USER="assessment"
 DB_PASS="redrum"
-DB_NAME="learning_navigator"
+DB_NAME="test_db"
 # DB_FILE="app/src/main/resources/init-schema.sql"
 
 echo "Initializing MySQL database..."
