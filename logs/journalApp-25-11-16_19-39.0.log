@@ -1,4 +1,0 @@
-25-11-16 19:39:19.920 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet' 
-25-11-16 19:39:19.933 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet' 
-25-11-16 19:39:19.938 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms 
-25-11-16 19:39:20.017 [http-nio-8081-exec-1] INFO  c.c.l.LearningNavigatorApplication - LEARNING NAVIGATOR APPLICATION works gracefully 
