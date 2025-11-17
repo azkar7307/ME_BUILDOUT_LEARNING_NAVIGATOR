@@ -25,16 +25,16 @@ import org.hibernate.annotations.CreationTimestamp;
 public class Exam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
     @OneToOne
     @JoinColumn(name="subject_id", nullable=false)
-    Subject subject;
+    private Subject subject;
 
     @ManyToMany(mappedBy = "exams")
-    Set<Student> students = new HashSet<>();
+    private Set<Student> students = new HashSet<>();
     
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
