@@ -1,0 +1,34 @@
+package com.crio.learning_navigator.service.impl;
+
+import com.crio.learning_navigator.dto.StudentDTO;
+import com.crio.learning_navigator.dto.response.StudentResponse;
+import com.crio.learning_navigator.entity.Student;
+import com.crio.learning_navigator.exception.ResourceAlreadyExistException;
+import com.crio.learning_navigator.repository.StudentRepository;
+import com.crio.learning_navigator.service.StudentService;
+import com.crio.learning_navigator.util.Util;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+
+@Slf4j
+@RequiredArgsConstructor
+public class StudentServiceImpl implements StudentService {
+
+    private final StudentRepository studentRepository;
+    private final ModelMapper modelMapper;
+
+    @Override
+    public StudentResponse createStudent(StudentDTO studentDTO) {
+        Student student = modelMapper.map(studentDTO, Student.class);
+        Student studentFromDb = studentRepository.findByEmail(student.getEmail());
+        if (studentFromDb != null) {
+            throw new ResourceAlreadyExistException(studentFromDb.getEmail(), "Student with email");
+        }
+        Student savedStudent = studentRepository.save(student);
+        log.info("Student created successfully | studentId={} | emailMasked={}",
+                savedStudent.getId(), Util.mask(savedStudent.getEmail()));
+        return modelMapper.map(savedStudent, StudentResponse.class);
+    }
+}
+
