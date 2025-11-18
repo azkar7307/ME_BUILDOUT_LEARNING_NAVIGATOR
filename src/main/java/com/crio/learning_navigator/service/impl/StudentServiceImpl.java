@@ -23,7 +23,10 @@ public class StudentServiceImpl implements StudentService {
         Student student = modelMapper.map(studentDTO, Student.class);
         Student studentFromDb = studentRepository.findByEmail(student.getEmail());
         if (studentFromDb != null) {
-            throw new ResourceAlreadyExistException(studentFromDb.getEmail(), "Student with email");
+            throw new ResourceAlreadyExistException(
+                Util.mask(studentFromDb.getEmail()), 
+                "Student"
+            );
         }
         Student savedStudent = studentRepository.save(student);
         log.info("Student created successfully | studentId={} | emailMasked={}",

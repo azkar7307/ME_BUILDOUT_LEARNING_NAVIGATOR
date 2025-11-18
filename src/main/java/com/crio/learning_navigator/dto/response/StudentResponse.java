@@ -13,6 +13,6 @@ public class StudentResponse {
     private Long id;
     private String name;
     private String email;
-    private List<SubjectDTO> enrolledSubjects;
-    private List<ExamDTO> enrolledExams;
+    // private List<SubjectDTO> enrolledSubjects;
+    // private List<ExamDTO> enrolledExams;
 }
