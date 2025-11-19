@@ -4,17 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+import java.util.Optional;
 import com.crio.learning_navigator.dto.StudentDTO;
 import com.crio.learning_navigator.dto.response.StudentResponse;
 import com.crio.learning_navigator.entity.Student;
 import com.crio.learning_navigator.exception.ResourceAlreadyExistException;
+import com.crio.learning_navigator.exception.ResourceNotFoundException;
 import com.crio.learning_navigator.repository.StudentRepository;
 import com.crio.learning_navigator.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,10 +62,12 @@ public class StudentServiceImplTest {
         when(studentRepository.save(any(Student.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Execute and varify
+        // Execute
         StudentResponse studentResponse = studentServiceImpl.createStudent(studentDTO);
 
         assertEquals(studentDTO.getName(), studentResponse.getName());
+
+        // Varify
         verify(studentRepository, times(1)).findByEmail(anyString());
         verify(studentRepository, times(1)).save(any(Student.class));
     }
@@ -73,14 +78,159 @@ public class StudentServiceImplTest {
         // Setup
         when(studentRepository.findByEmail(anyString())).thenReturn(sampleStudent);
 
-        // Execute & Verify
+        // Execute
         assertThrows(
                 ResourceAlreadyExistException.class,
                 () -> studentServiceImpl.createStudent(studentDTO)
         );
 
+        // Varify
         verify(studentRepository, times(1)).findByEmail(anyString());
         verify(studentRepository, never()).save(any(Student.class));
+
+    }
+
+    @Test
+    void GetStudentById_Existing_Return_StudentResponse() {
+        // Setup
+        when(studentRepository.findById(anyLong()))
+                .thenReturn(Optional.of(sampleStudent));
+
+        // Execute
+        StudentResponse studentResponse = studentServiceImpl.getStudentById(anyLong());
+        assertEquals(sampleStudent.getId(), studentResponse.getId());
+        assertEquals(sampleStudent.getName(), studentResponse.getName());
+
+        // Varify
+        verify(studentRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void getStudentById_NonExisting_Throw_ResourceNotFoundException() {
+
+
+        when(studentRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        // Execute
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> studentServiceImpl.getStudentById(anyLong())
+        );
+
+        // Varify
+        verify(studentRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void updateStudentById_updateName_Return_String_Success() {
+        StudentDTO studentToUpdate = new StudentDTO();
+        studentToUpdate.setName("John Doe");
+        studentToUpdate.setEmail(sampleStudent.getEmail());
+
+        // Setup
+        when(studentRepository.findById(anyLong()))
+                .thenReturn(Optional.of(sampleStudent));
+
+        when(studentRepository.findByEmail(anyString()))
+                .thenReturn(sampleStudent);
+
+        when(studentRepository.save(any(Student.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+
+        // Execute
+        String response = studentServiceImpl.updateStudentById(sampleStudent.getId(), studentToUpdate);
+
+        String expectedResponse = "Student with id '" + sampleStudent.getId() + "' updated successfully.";
+        assertEquals(expectedResponse, response);
+
+        // Varify
+        verify(studentRepository, times(1)).findById(anyLong());
+        verify(studentRepository, times(1)).findByEmail(anyString());
+        verify(studentRepository, times(1)).save(any(Student.class));
+    }
+
+    @Test
+    void updateStudentById_UpdateNameAndEmail_Return_String_Success() {
+        StudentDTO studentToUpdate = new StudentDTO();
+        studentToUpdate.setName("John Doe");
+        studentToUpdate.setEmail("johndoe@crio.in");
+
+        // Setup
+        when(studentRepository.findById(anyLong()))
+                .thenReturn(Optional.of(sampleStudent));
+
+        when(studentRepository.findByEmail(anyString()))
+                .thenReturn(null);
+
+        when(studentRepository.save(any(Student.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+
+        // Execute
+        String response = studentServiceImpl.updateStudentById(sampleStudent.getId(), studentToUpdate);
+
+        String expectedResponse = "Student with id '" + sampleStudent.getId() + "' updated successfully.";
+        assertEquals(expectedResponse, response);
+
+        // Varify
+        verify(studentRepository, times(1)).findById(anyLong());
+        verify(studentRepository, times(1)).findByEmail(anyString());
+        verify(studentRepository, times(1)).save(any(Student.class));
+    }
+
+    @Test
+    void updateStudentById_UpdateNameAndEmail_Throw_Exception() {
+        StudentDTO student2 = new StudentDTO();
+        student2.setName("John Doe");
+        student2.setEmail("john@crio.in");
+
+        Student existingStudent = modelMapper.map(student2, Student.class);
+        existingStudent.setId(2L);
+
+        // try to update name and email of sampleStudent
+        StudentDTO studentToUpdate = new StudentDTO();
+        studentToUpdate.setName("John Smith");
+        // insert the existing email
+        studentToUpdate.setEmail(existingStudent.getEmail());
+
+        // Setup
+        when(studentRepository.findById(anyLong()))
+                .thenReturn(Optional.of(sampleStudent));
+
+        when(studentRepository.findByEmail(anyString()))
+                .thenReturn(existingStudent);
+
+
+        // Execute
+        assertThrows(
+                ResourceAlreadyExistException.class,
+                () -> studentServiceImpl.updateStudentById(sampleStudent.getId(), studentToUpdate)
+        );
+
+        // Varify
+        verify(studentRepository, times(1)).findById(anyLong());
+        verify(studentRepository, times(1)).findByEmail(anyString());
+    }
+
+    @Test
+    void deleteStudentById_Return_String() {
+        // Setup
+        when(studentRepository.findById(anyLong()))
+                .thenReturn(Optional.of(sampleStudent));
+
+        doNothing().when(studentRepository).delete(any(Student.class));
+
+        // Execute
+        String response = studentServiceImpl.deleteById(anyLong());
+
+        String expectedResponse = "Student with id '" + sampleStudent.getId() + "' deleted successfully.";
+        assertEquals(expectedResponse, response);
+
+        // Varify
+        verify(studentRepository, times(1)).findById(anyLong());
+        verify(studentRepository, times(1)).delete(any(Student.class));
 
     }
 

@@ -33,5 +33,20 @@ public class StudentServiceImpl implements StudentService {
                 savedStudent.getId(), Util.mask(savedStudent.getEmail()));
         return modelMapper.map(savedStudent, StudentResponse.class);
     }
+
+    @Override
+    public StudentResponse getStudentById(long id) {
+        return null;
+    }
+
+    @Override
+    public String updateStudentById(Long id, StudentDTO studentToUpdate) {
+        return null;
+    }
+
+    @Override
+    public String deleteById(long id) {
+        return null;
+    }
 }
 
