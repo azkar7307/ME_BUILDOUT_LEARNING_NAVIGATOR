@@ -27,7 +27,7 @@ public class StudentServiceImpl implements StudentService {
         if (studentFromDb != null) {
             throw new ResourceAlreadyExistException(
                 Util.mask(studentFromDb.getEmail()), 
-                "Student"
+                "Student with email"
             );
         }
         Student savedStudent = studentRepository.save(student);
@@ -63,13 +63,12 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findByEmail(studentDTO.getEmail());
 
         if (student != null && !student.getEmail().equals(studentToUpdate.getEmail())) {
-            throw new ResourceAlreadyExistException(Util.mask(student.getEmail()), "Other Student");
+            throw new ResourceAlreadyExistException(Util.mask(student.getEmail()), "Other Student with email");
         }
 
         studentToUpdate.setName(studentDTO.getName());
         studentToUpdate.setEmail(studentDTO.getEmail());
-        Student savedStudent = studentRepository.save(studentToUpdate);
-        log.info("Student with id '{}' updated successfully.", id);
+        studentRepository.save(studentToUpdate);
         return "Student with id '" + id + "' updated successfully.";
     }
 

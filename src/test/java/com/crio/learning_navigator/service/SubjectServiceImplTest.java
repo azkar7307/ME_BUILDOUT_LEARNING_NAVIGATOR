@@ -61,7 +61,7 @@ public class SubjectServiceImplTest {
     @Test
     void createSubject_Return_SubjectResponse() {
         // Setup
-        when(subjectRepository.findByName(anyString())).thenReturn(null);
+        when(subjectRepository.existsByNameIgnoreCase(anyString())).thenReturn(false);
         when(subjectRepository.save(any(Subject.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -70,7 +70,7 @@ public class SubjectServiceImplTest {
 
         // Varify
         assertEquals(subjectDTO.getName(), subjectResponse.getSubjectName());
-        verify(subjectRepository, times(1)).findByName(anyString());
+        verify(subjectRepository, times(1)).existsByNameIgnoreCase(anyString());
         verify(subjectRepository, times(1)).save(any(Subject.class));
     }
 
@@ -78,7 +78,7 @@ public class SubjectServiceImplTest {
     void createSubject_Duplicate_Throw_ResourceAlreadyExistException() {
 
         // Setup
-        when(subjectRepository.findByName(anyString())).thenReturn(sampleSubject);
+        when(subjectRepository.existsByNameIgnoreCase(anyString())).thenReturn(true);
 
         // Execute
         assertThrows(
@@ -87,7 +87,7 @@ public class SubjectServiceImplTest {
         );
 
         // Verify
-        verify(subjectRepository, times(1)).findByName(anyString());
+        verify(subjectRepository, times(1)).existsByNameIgnoreCase(anyString());
         verify(subjectRepository, never()).save(any(Subject.class));
     }
 
@@ -153,8 +153,8 @@ public class SubjectServiceImplTest {
         when(subjectRepository.findById(anyLong()))
                 .thenReturn(Optional.of(sampleSubject));
 
-        when(subjectRepository.findByName(anyString()))
-                .thenReturn(null);
+        when(subjectRepository.existsByNameIgnoreCase(anyString()))
+                .thenReturn(false);
 
         when(subjectRepository.save(any(Subject.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -168,7 +168,7 @@ public class SubjectServiceImplTest {
 
         // Varify
         verify(subjectRepository, times(1)).findById(anyLong());
-        verify(subjectRepository, times(1)).findByName(anyString());
+        verify(subjectRepository, times(1)).existsByNameIgnoreCase(anyString());
         verify(subjectRepository, times(1)).save(any(Subject.class));
     }
 
@@ -181,11 +181,9 @@ public class SubjectServiceImplTest {
         existingSubject.setId(2L);
 
         // Setup
-        when(subjectRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleSubject));
+        when(subjectRepository.existsByNameIgnoreCase(anyString()))
+                .thenReturn(true);
 
-        when(subjectRepository.findByName(anyString()))
-                .thenReturn(existingSubject);
 
         // Execute
         // try to update sampleSubject
@@ -195,8 +193,9 @@ public class SubjectServiceImplTest {
         );
 
         // Varify
-        verify(subjectRepository, times(1)).findById(anyLong());
-        verify(subjectRepository, times(1)).findByName(anyString());
+        verify(subjectRepository, never()).findById(anyLong());
+        verify(subjectRepository, never()).save(any(Subject.class));
+        verify(subjectRepository, times(1)).existsByNameIgnoreCase(anyString());
     }
 
     @Test

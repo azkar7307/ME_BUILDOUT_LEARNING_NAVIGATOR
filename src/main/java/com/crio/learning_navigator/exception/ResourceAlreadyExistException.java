@@ -10,8 +10,8 @@ public class ResourceAlreadyExistException extends RuntimeException{
     super(resourceName + " with id '" + id + "' already exist.");
   }
 
-  public ResourceAlreadyExistException(String email, String resourceName) {
-    super(resourceName + " with email '" + email + "' already exist.");
+  public ResourceAlreadyExistException(String resourceId, String resourceName) {
+    super(resourceName + " '" + resourceId + "' already exist.");
   }
     
 }
