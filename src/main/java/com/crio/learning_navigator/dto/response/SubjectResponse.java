@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class SubjectResponse {
     
     private Long id;
-    private String name;
+    private String subjectName;
 }
