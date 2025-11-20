@@ -12,6 +12,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import com.crio.learning_navigator.dto.StudentDTO;
 import com.crio.learning_navigator.dto.response.StudentResponse;
@@ -88,6 +91,30 @@ public class StudentServiceImplTest {
         verify(studentRepository, times(1)).findByEmail(anyString());
         verify(studentRepository, never()).save(any(Student.class));
 
+    }
+
+    @Test
+    void getAllStudent_Return_ListOf_StudentResponse() {
+
+        StudentDTO student2 = new StudentDTO();
+        student2.setName("Student2");
+        student2.setEmail("student2@crio.in");
+
+        Student sampleStudent2 = modelMapper.map(studentDTO, Student.class);
+        sampleStudent2.setId(2L);
+
+        List<Student> students = new ArrayList<>(Arrays.asList(sampleStudent, sampleStudent2));
+
+        // Setup
+        when(studentRepository.findAll())
+                .thenReturn(students);
+
+        // Execute
+        List<StudentResponse> studentResponses = studentServiceImpl.getAllStudents();
+        assertEquals(2, studentResponses.size());
+
+        // Varify
+        verify(studentRepository, times(1)).findAll();
     }
 
     @Test

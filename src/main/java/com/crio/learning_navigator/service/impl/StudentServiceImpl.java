@@ -9,6 +9,7 @@ import com.crio.learning_navigator.service.StudentService;
 import com.crio.learning_navigator.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 import org.modelmapper.ModelMapper;
 
 @Slf4j
@@ -32,6 +33,11 @@ public class StudentServiceImpl implements StudentService {
         log.info("Student created successfully | studentId={} | emailMasked={}",
                 savedStudent.getId(), Util.mask(savedStudent.getEmail()));
         return modelMapper.map(savedStudent, StudentResponse.class);
+    }
+
+    @Override
+    public List<StudentResponse> getAllStudents() {
+        return null;
     }
 
     @Override
