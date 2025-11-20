@@ -9,11 +9,11 @@ public interface StudentService {
 
     StudentResponse createStudent(StudentDTO studentDTO);
     
-    StudentResponse getStudentById(long id);
+    StudentResponse getStudentById(Long id);
 
     String updateStudentById(Long id, StudentDTO studentToUpdate);
 
-    String deleteById(long id);
+    String deleteById(Long id);
 
     List<StudentResponse> getAllStudents();
 }

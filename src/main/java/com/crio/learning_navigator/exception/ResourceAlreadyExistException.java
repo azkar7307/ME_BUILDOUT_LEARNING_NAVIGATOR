@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class ResourceAlreadyExistException extends RuntimeException{
 
-  public ResourceAlreadyExistException(Long userId, String resourceName) {
-    super(resourceName + " with id '" + userId + "' already exist.");
+  public ResourceAlreadyExistException(Long id, String resourceName) {
+    super(resourceName + " with id '" + id + "' already exist.");
   }
 
   public ResourceAlreadyExistException(String email, String resourceName) {

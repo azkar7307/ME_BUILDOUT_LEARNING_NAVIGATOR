@@ -1,9 +1,7 @@
 package com.crio.learning_navigator.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,6 +54,7 @@ public class StudentServiceImplTest {
         studentDTO.setEmail("student1@crio.in");
 
         sampleStudent = modelMapper.map(studentDTO, Student.class);
+        sampleStudent.setId(1L);
     }
 
     @Test
@@ -250,7 +249,7 @@ public class StudentServiceImplTest {
         doNothing().when(studentRepository).delete(any(Student.class));
 
         // Execute
-        String response = studentServiceImpl.deleteById(anyLong());
+        String response = studentServiceImpl.deleteById(sampleStudent.getId());
 
         String expectedResponse = "Student with id '" + sampleStudent.getId() + "' deleted successfully.";
         assertEquals(expectedResponse, response);
