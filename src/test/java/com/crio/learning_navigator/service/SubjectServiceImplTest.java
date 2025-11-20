@@ -69,7 +69,7 @@ public class SubjectServiceImplTest {
         SubjectResponse subjectResponse = subjectServiceImpl.registerSubject(subjectDTO);
 
         // Varify
-        assertEquals(subjectDTO.getName(), subjectResponse.getName());
+        assertEquals(subjectDTO.getName(), subjectResponse.getSubjectName());
         verify(subjectRepository, times(1)).findByName(anyString());
         verify(subjectRepository, times(1)).save(any(Subject.class));
     }
@@ -123,7 +123,7 @@ public class SubjectServiceImplTest {
         // Execute
         SubjectResponse subjectResponse = subjectServiceImpl.getSubjectById(1L);
         assertEquals(sampleSubject.getId(), subjectResponse.getId());
-        assertEquals(sampleSubject.getName(), subjectResponse.getName());
+        assertEquals(sampleSubject.getName(), subjectResponse.getSubjectName());
 
         // Varify
         verify(subjectRepository, times(1)).findById(anyLong());
