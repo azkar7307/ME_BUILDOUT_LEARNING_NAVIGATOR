@@ -57,25 +57,20 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public String updateStudentById(Long id, StudentDTO studentDTO) {
         Student studentToUpdate = studentRepository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException(id, "Cannot be updated because the Student")
+                () -> new ResourceNotFoundException(id, "Cannot be updated because the Student")
         );
         log.info("Fetched students from db for update with id: {}", id);
         Student student = studentRepository.findByEmail(studentDTO.getEmail());
 
-        if (student == null || student.getEmail() == studentToUpdate.getEmail()) {
-            studentToUpdate.setName(studentDTO.getName());
-            studentToUpdate.setEmail(studentDTO.getEmail());
-            Student savedStudent = studentRepository.save(studentToUpdate);
-            if (savedStudent != null) {
-                log.info("Student with id '{}' updated successfully.", id);
-                return "Student with id '" + id + "' updated successfully.";
-            } else {
-                log.info("Student with id '{}' could not update!!!", id);
-                throw new RuntimeException("Internal Error");
-            }
-        } else {
+        if (student != null && !student.getEmail().equals(studentToUpdate.getEmail())) {
             throw new ResourceAlreadyExistException(Util.mask(student.getEmail()), "Other Student");
         }
+
+        studentToUpdate.setName(studentDTO.getName());
+        studentToUpdate.setEmail(studentDTO.getEmail());
+        Student savedStudent = studentRepository.save(studentToUpdate);
+        log.info("Student with id '{}' updated successfully.", id);
+        return "Student with id '" + id + "' updated successfully.";
     }
 
     @Override
