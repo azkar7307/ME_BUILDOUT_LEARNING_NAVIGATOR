@@ -28,7 +28,9 @@ public class StudentController {
 
 
     @PostMapping
-    public ResponseEntity<StudentResponse> createStudent(@Valid @RequestBody StudentDTO studentDTO){
+    public ResponseEntity<StudentResponse> createStudent(
+        @Valid @RequestBody StudentDTO studentDTO
+    ){
         log.info("Request received for creating a student");
         StudentResponse savedStudent = studentService.createStudent(studentDTO);
         log.info("Student created successfully with id: {}", savedStudent.getId());
@@ -44,7 +46,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentResponse> getStudentById(@PathVariable("id") Long id){
+    public ResponseEntity<StudentResponse> getStudentById(@PathVariable("id") Long id) {
         log.info("Request received for fetching student by id: {}", id);
         StudentResponse studentResponse = studentService.getStudentById(id);
         log.info("Student fetched successfully by id {}", id);
@@ -52,7 +54,10 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateStudentById(@PathVariable("id") Long id, @Valid @RequestBody StudentDTO studentDTO) {
+    public ResponseEntity<String> updateStudentById(
+        @PathVariable("id") Long id, 
+        @Valid @RequestBody StudentDTO studentDTO
+    ) {
         log.info("Request received for updating a student by id {}", id);
         String response = studentService.updateStudentById(id, studentDTO);
         log.info("Student updated successfully by id: {}", id);

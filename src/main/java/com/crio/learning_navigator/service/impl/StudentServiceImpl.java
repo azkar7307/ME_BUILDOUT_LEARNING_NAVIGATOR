@@ -12,9 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
+@Service
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
@@ -32,7 +34,7 @@ public class StudentServiceImpl implements StudentService {
         }
         Student savedStudent = studentRepository.save(student);
         log.info("Student created successfully | studentId={} | emailMasked={}",
-                savedStudent.getId(), Util.mask(savedStudent.getEmail()));
+            savedStudent.getId(), Util.mask(savedStudent.getEmail()));
         return modelMapper.map(savedStudent, StudentResponse.class);
     }
 
@@ -41,8 +43,8 @@ public class StudentServiceImpl implements StudentService {
         List<Student> students = studentRepository.findAll();
         log.info("Fetched all students from db");
         return students.stream()
-                .map(student -> modelMapper.map(student, StudentResponse.class))
-                .toList();
+            .map(student -> modelMapper.map(student, StudentResponse.class))
+            .toList();
     }
 
     @Override
@@ -57,13 +59,15 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public String updateStudentById(Long id, StudentDTO studentDTO) {
         Student studentToUpdate = studentRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, "Cannot be updated because the Student")
+            () -> new ResourceNotFoundException(id, "Cannot be updated because the Student")
         );
         log.info("Fetched students from db for update with id: {}", id);
         Student student = studentRepository.findByEmail(studentDTO.getEmail());
 
         if (student != null && !student.getEmail().equals(studentToUpdate.getEmail())) {
-            throw new ResourceAlreadyExistException(Util.mask(student.getEmail()), "Other Student with email");
+            throw new ResourceAlreadyExistException(Util.mask(
+                student.getEmail()), 
+                "Other Student with email");
         }
 
         studentToUpdate.setName(studentDTO.getName());

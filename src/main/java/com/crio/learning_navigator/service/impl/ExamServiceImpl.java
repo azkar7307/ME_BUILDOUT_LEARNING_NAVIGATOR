@@ -13,9 +13,11 @@ import com.crio.learning_navigator.repository.ExamRepository;
 import com.crio.learning_navigator.repository.SubjectRepository;
 import com.crio.learning_navigator.service.ExamService;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
+@Service
 public class ExamServiceImpl implements ExamService {
 
     private final ExamRepository examRepository;
@@ -30,12 +32,16 @@ public class ExamServiceImpl implements ExamService {
         );
         log.info("Fetched subject from db with id: {}", subjectId);
         if (subject.getExam() != null) {
-            throw new ResourceAlreadyExistException("Exam already registered with subjectId '" + subjectId + "'");
+            throw new ResourceAlreadyExistException(
+                "Exam already registered with subjectId '" + subjectId 
+                + "'"
+            );
         }
         Exam exam = new Exam();
         exam.setSubject(subject);
         subject.setExam(exam); // For maintaining bidirectional relationship
-        Subject examSubject = subjectRepository.save(subject); // Saving subject also saves exam due to Casscade.ALL
+        // Saving subject also saves exam due to Casscade.ALL
+        Subject examSubject = subjectRepository.save(subject); 
         log.info("Exam with id '{}' registered successfully ", examSubject.getExam().getId());
         return modelMapper.map(examSubject.getExam(), ExamResponse.class);
     }

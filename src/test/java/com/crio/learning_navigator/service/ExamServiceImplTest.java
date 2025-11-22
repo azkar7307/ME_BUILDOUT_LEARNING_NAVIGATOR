@@ -82,7 +82,7 @@ public class ExamServiceImplTest {
         // Setup
         when(subjectRepository.findById(anyLong())).thenReturn(Optional.of(sampleSubject));
         when(subjectRepository.save(any(Subject.class)))
-                .thenReturn(subject2);
+            .thenReturn(subject2);
 
         // Execute
         ExamResponse examResponse = examServiceImpl.registerExam(1L);
@@ -107,8 +107,8 @@ public class ExamServiceImplTest {
 
         // Execute
         assertThrows(
-                ResourceAlreadyExistException.class,
-                () -> examServiceImpl.registerExam(1L)
+            ResourceAlreadyExistException.class,
+            () -> examServiceImpl.registerExam(1L)
         );
 
         // Verify
@@ -133,7 +133,7 @@ public class ExamServiceImplTest {
 
         // Setup
         when(examRepository.findAll())
-                .thenReturn(exams);
+            .thenReturn(exams);
 
         // Execute
         List<ExamResponse> examResponse = examServiceImpl.getAllExams();
@@ -151,7 +151,7 @@ public class ExamServiceImplTest {
         
         // Setup
         when(examRepository.findById(anyLong()))
-        .thenReturn(Optional.of(sampleExam));
+            .thenReturn(Optional.of(sampleExam));
         
         // when(examRepository.findByIdWithSubject(anyLong()))
         //         .thenReturn(Optional.of(sampleExam));
@@ -173,12 +173,12 @@ public class ExamServiceImplTest {
 
         // Setup
         when(examRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
+            .thenReturn(Optional.empty());
 
         // Execute
         assertThrows(
-                ResourceNotFoundException.class,
-                () -> examServiceImpl.getExamById(1L)
+            ResourceNotFoundException.class,
+            () -> examServiceImpl.getExamById(1L)
         );
 
         // Varify
@@ -191,7 +191,7 @@ public class ExamServiceImplTest {
     void deleteExam_Return_String_success() {
         // Setup
         when(examRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleExam));
+            .thenReturn(Optional.of(sampleExam));
 
         doNothing().when(examRepository).delete(any(Exam.class));
 

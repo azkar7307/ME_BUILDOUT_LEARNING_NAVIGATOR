@@ -11,6 +11,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +66,7 @@ public class StudentServiceImplTest {
         // Setup
         when(studentRepository.findByEmail(anyString())).thenReturn(null);
         when(studentRepository.save(any(Student.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
         // Execute
         StudentResponse studentResponse = studentServiceImpl.createStudent(studentDTO);
@@ -86,8 +87,8 @@ public class StudentServiceImplTest {
 
         // Execute
         assertThrows(
-                ResourceAlreadyExistException.class,
-                () -> studentServiceImpl.createStudent(studentDTO)
+            ResourceAlreadyExistException.class,
+            () -> studentServiceImpl.createStudent(studentDTO)
         );
 
         // Varify
@@ -110,7 +111,7 @@ public class StudentServiceImplTest {
 
         // Setup
         when(studentRepository.findAll())
-                .thenReturn(students);
+            .thenReturn(students);
 
         // Execute
         List<StudentResponse> studentResponses = studentServiceImpl.getAllStudents();
@@ -118,14 +119,17 @@ public class StudentServiceImplTest {
 
         // Varify
         verify(studentRepository, times(1)).findAll();
-        verify(modelMapper, times(2)).map(any(Student.class), eq(StudentResponse.class));
+        verify(modelMapper, times(2)).map(
+            any(Student.class), 
+            eq(StudentResponse.class)
+        );
     }
 
     @Test
     void GetStudentById_Existing_Return_StudentResponse() {
         // Setup
         when(studentRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleStudent));
+            .thenReturn(Optional.of(sampleStudent));
 
         // Execute
         StudentResponse studentResponse = studentServiceImpl.getStudentById(anyLong());
@@ -142,12 +146,12 @@ public class StudentServiceImplTest {
 
 
         when(studentRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
+            .thenReturn(Optional.empty());
 
         // Execute
         assertThrows(
-                ResourceNotFoundException.class,
-                () -> studentServiceImpl.getStudentById(anyLong())
+            ResourceNotFoundException.class,
+            () -> studentServiceImpl.getStudentById(anyLong())
         );
 
         // Varify
@@ -163,13 +167,13 @@ public class StudentServiceImplTest {
 
         // Setup
         when(studentRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleStudent));
+            .thenReturn(Optional.of(sampleStudent));
 
         when(studentRepository.findByEmail(anyString()))
-                .thenReturn(sampleStudent);
+            .thenReturn(sampleStudent);
 
         when(studentRepository.save(any(Student.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
 
         // Execute
@@ -192,13 +196,13 @@ public class StudentServiceImplTest {
 
         // Setup
         when(studentRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleStudent));
+            .thenReturn(Optional.of(sampleStudent));
 
         when(studentRepository.findByEmail(anyString()))
-                .thenReturn(null);
+            .thenReturn(null);
 
         when(studentRepository.save(any(Student.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
 
         // Execute
@@ -230,16 +234,16 @@ public class StudentServiceImplTest {
 
         // Setup
         when(studentRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleStudent));
+            .thenReturn(Optional.of(sampleStudent));
 
         when(studentRepository.findByEmail(anyString()))
-                .thenReturn(existingStudent);
+            .thenReturn(existingStudent);
 
 
         // Execute
         assertThrows(
-                ResourceAlreadyExistException.class,
-                () -> studentServiceImpl.updateStudentById(sampleStudent.getId(), studentToUpdate)
+            ResourceAlreadyExistException.class,
+            () -> studentServiceImpl.updateStudentById(sampleStudent.getId(), studentToUpdate)
         );
 
         // Varify
@@ -251,7 +255,7 @@ public class StudentServiceImplTest {
     void deleteStudentById_Return_String() {
         // Setup
         when(studentRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleStudent));
+            .thenReturn(Optional.of(sampleStudent));
 
         doNothing().when(studentRepository).delete(any(Student.class));
 

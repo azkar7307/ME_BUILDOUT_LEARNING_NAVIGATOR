@@ -22,9 +22,9 @@ public class ExamController {
 
     private final ExamService examService;
 
-    @PostMapping
-    public ResponseEntity<ExamResponse> registerExam(Long subjectId) {
-        log.info("Request received for registering a subject");
+    @PostMapping("/subjects/{subjectId}")
+    public ResponseEntity<ExamResponse> registerExam(@PathVariable Long subjectId) {
+        log.info("Request received for registering a subject {}", subjectId);
         ExamResponse savedExam = examService.registerExam(subjectId);
         log.info("Exam registered successfully with id: {}", savedExam.getId());
         return new ResponseEntity<>(savedExam, HttpStatus.CREATED);

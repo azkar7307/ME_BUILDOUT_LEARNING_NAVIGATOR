@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubjectDTO {
-
     @NotBlank(message = "Subject name is required")
-    private String name;
-    
+    private String subjectName;    
 }

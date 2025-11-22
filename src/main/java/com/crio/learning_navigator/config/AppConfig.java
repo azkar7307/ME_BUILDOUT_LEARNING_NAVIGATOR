@@ -1,14 +1,18 @@
 package com.crio.learning_navigator.config;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 import com.crio.learning_navigator.dto.response.ExamResponse;
+import com.crio.learning_navigator.dto.response.StudentResponse;
+import com.crio.learning_navigator.dto.response.SubjectResponse;
 import com.crio.learning_navigator.entity.Exam;
+import com.crio.learning_navigator.entity.Student;
+import com.crio.learning_navigator.entity.Subject;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Slf4j
 @Configuration
 public class AppConfig {
 
@@ -24,11 +28,57 @@ public class AppConfig {
 
             if (src == null) return null;
             
-            String examName = src.getSubject().getName() + " Exam";
+            String examName = (src.getSubject() != null && src.getSubject().getName() != null) 
+                ? src.getSubject().getName() + " Exam" :
+                "Unknown";
             return new ExamResponse(src.getId(), examName);
         };
 
         modelMapper.addConverter(examConverter, Exam.class, ExamResponse.class);
+        
+        TypeMap<Subject, SubjectResponse> subjectMap = modelMapper.createTypeMap(
+                Subject.class, 
+                SubjectResponse.class
+        );
+
+        subjectMap.addMappings(mapper -> {
+                mapper.map(Subject::getId, SubjectResponse::setId);
+                mapper.map(Subject::getName, SubjectResponse::setSubjectName);
+        });
+
+        // Create a type map
+        TypeMap<Student, StudentResponse> studentMap = modelMapper.createTypeMap(
+                Student.class, 
+                StudentResponse.class
+        );
+
+        studentMap.addMappings(mapper -> {
+            // System.out.println("inside student type map");
+              // map subjects list
+            mapper.map(
+                    src -> (src.getSubjects() != null)
+                        ? src.getSubjects()
+                            .stream()
+                            .map(sub -> modelMapper.map(sub, SubjectResponse.class))
+                            .toList()
+                        : List.of(),
+                    StudentResponse::setEnrolledSubjects
+            );
+            
+            // map exams list
+            mapper.map(
+                    src -> (src.getExams() != null)
+                        ? src.getExams()
+                            .stream()
+                            .map(exam -> modelMapper.map(exam, ExamResponse.class))
+                            .toList()
+                        : List.of(),
+                    StudentResponse::setEnrolledExams
+            );   
+             
+            // System.out.println("After student type map");
+        });
+
         return modelMapper;
     }
 }

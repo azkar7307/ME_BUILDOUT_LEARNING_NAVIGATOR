@@ -52,7 +52,7 @@ public class SubjectServiceImplTest {
     @BeforeEach
     void setup() {
         subjectDTO = new SubjectDTO();
-        subjectDTO.setName("Java301");
+        subjectDTO.setSubjectName("Java301");
 
         sampleSubject = modelMapper.map(subjectDTO, Subject.class);
         sampleSubject.setId(1L);
@@ -63,11 +63,11 @@ public class SubjectServiceImplTest {
         // Setup
         when(subjectRepository.existsByNameIgnoreCase(anyString())).thenReturn(false);
         when(subjectRepository.save(any(Subject.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
         // Execute
         SubjectResponse subjectResponse = subjectServiceImpl.registerSubject(subjectDTO);
-        assertEquals(subjectDTO.getName(), subjectResponse.getSubjectName());
+        assertEquals(subjectDTO.getSubjectName(), subjectResponse.getSubjectName());
 
         // Varify
         verify(subjectRepository, times(1)).existsByNameIgnoreCase(anyString());
@@ -83,8 +83,8 @@ public class SubjectServiceImplTest {
 
         // Execute
         assertThrows(
-                ResourceAlreadyExistException.class,
-                () -> subjectServiceImpl.registerSubject(subjectDTO)
+            ResourceAlreadyExistException.class,
+            () -> subjectServiceImpl.registerSubject(subjectDTO)
         );
 
         // Verify
@@ -97,7 +97,7 @@ public class SubjectServiceImplTest {
     void GetAllSubjects_Return_ListOfSubjectResponse() {
         
         SubjectDTO subjectDTO2 = new SubjectDTO();
-        subjectDTO2.setName("Java302");
+        subjectDTO2.setSubjectName("Java302");
         
         Subject sampleSubject2 = modelMapper.map(subjectDTO2, Subject.class);
         sampleSubject2.setId(2L);
@@ -106,7 +106,7 @@ public class SubjectServiceImplTest {
         
         // Setup
         when(subjectRepository.findAll())
-                .thenReturn(subjects);
+            .thenReturn(subjects);
 
         // Execute
         List<SubjectResponse> subjectsResponse = subjectServiceImpl.getAllSubjects();
@@ -121,7 +121,7 @@ public class SubjectServiceImplTest {
     void GetSubjectById_Existing_Return_SubjectResponse() {
         // Setup
         when(subjectRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleSubject));
+            .thenReturn(Optional.of(sampleSubject));
 
         // Execute
         SubjectResponse subjectResponse = subjectServiceImpl.getSubjectById(1L);
@@ -136,12 +136,12 @@ public class SubjectServiceImplTest {
     @Test
     void getSubjectById_NonExisting_Throw_ResourceNotFoundException() {
         when(subjectRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
+            .thenReturn(Optional.empty());
 
         // Execute
         assertThrows(
-                ResourceNotFoundException.class,
-                () -> subjectServiceImpl.getSubjectById(1L)
+            ResourceNotFoundException.class,
+            () -> subjectServiceImpl.getSubjectById(1L)
         );
 
         // Varify
@@ -152,17 +152,17 @@ public class SubjectServiceImplTest {
     @Test
     void updateSubject_Return_String_Success() {
         SubjectDTO subjectToUpdate = new SubjectDTO();
-        subjectToUpdate.setName("Java301 BD");
+        subjectToUpdate.setSubjectName("Java301 BD");
 
         // Setup
         when(subjectRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleSubject));
+            .thenReturn(Optional.of(sampleSubject));
 
         when(subjectRepository.existsByNameIgnoreCase(anyString()))
-                .thenReturn(false);
+            .thenReturn(false);
 
         when(subjectRepository.save(any(Subject.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
 
         // Execute
@@ -181,21 +181,21 @@ public class SubjectServiceImplTest {
     @Test
     void updateSubject_WithExistingSubjectName_Throw_Exception() {
         SubjectDTO sampleSubject2 = new SubjectDTO();
-        sampleSubject2.setName("Java301 BD");
+        sampleSubject2.setSubjectName("Java301 BD");
 
         Subject existingSubject = modelMapper.map(sampleSubject2, Subject.class);
         existingSubject.setId(2L);
 
         // Setup
         when(subjectRepository.existsByNameIgnoreCase(anyString()))
-                .thenReturn(true);
+            .thenReturn(true);
 
 
         // Execute
         // try to update sampleSubject
         assertThrows(
-                ResourceAlreadyExistException.class,
-                () -> subjectServiceImpl.updateSubject(sampleSubject.getId(), subjectDTO)
+            ResourceAlreadyExistException.class,
+            () -> subjectServiceImpl.updateSubject(sampleSubject.getId(), subjectDTO)
         );
 
         // Varify
@@ -209,7 +209,7 @@ public class SubjectServiceImplTest {
     void deleteSubject_Return_String_success() {
         // Setup
         when(subjectRepository.findById(anyLong()))
-                .thenReturn(Optional.of(sampleSubject));
+            .thenReturn(Optional.of(sampleSubject));
 
         doNothing().when(subjectRepository).delete(any(Subject.class));
 

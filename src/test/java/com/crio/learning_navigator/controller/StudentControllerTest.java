@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
 import java.util.Arrays;
 import java.util.List;
 import com.crio.learning_navigator.dto.StudentDTO;
@@ -24,7 +25,6 @@ import com.crio.learning_navigator.exception.ResourceNotFoundException;
 import com.crio.learning_navigator.service.StudentService;
 import com.crio.learning_navigator.util.Util;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,8 +58,8 @@ public class StudentControllerTest {
     @BeforeEach
     void setup() {
         mockMvc = standaloneSetup(studentController)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
+            .setControllerAdvice(new GlobalExceptionHandler())
+            .build();
 
         studentDTO = new StudentDTO();
         studentDTO.setName("Student1");
@@ -80,10 +80,10 @@ public class StudentControllerTest {
         mockMvc.perform(post("/students")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(studentDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.name").value("Student1"))
-                .andExpect(jsonPath("$.email").value("student1@crio.in"));
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").value(1L))
+            .andExpect(jsonPath("$.name").value("Student1"))
+            .andExpect(jsonPath("$.email").value("student1@crio.in"));
 
         verify(studentService, times(1)).createStudent(any(StudentDTO.class));
     }
@@ -93,25 +93,25 @@ public class StudentControllerTest {
     void create_Duplicate_Student_Return_409_Conflict() throws Exception {
         // Setup
         when(studentService.createStudent(any(StudentDTO.class)))
-                .thenThrow(
-                        new ResourceAlreadyExistException(
-                                Util.mask(studentDTO.getEmail()),
-                                "Student"
-                        )
-                );
+            .thenThrow(
+                new ResourceAlreadyExistException(
+                    Util.mask(studentDTO.getEmail()),
+                        "Student"
+                    )
+            );
 
         // Execute & Verify
         mockMvc.perform(post("/students")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(studentDTO)))
-                .andExpect(status().isConflict())
-                .andExpect(status().is(409))
-                .andExpect(jsonPath("$.message").value("Student with email '"
-                        + Util.mask(studentDTO.getEmail())
-                        + "' already exist."))
-                .andExpect(jsonPath("$.status").value(409))
-                .andExpect(jsonPath("$.error").value("Conflict"))
-                .andExpect(jsonPath("$.path").value("/students"));
+            .andExpect(status().isConflict())
+            .andExpect(status().is(409))
+            .andExpect(jsonPath("$.message").value("Student '"
+                + Util.mask(studentDTO.getEmail())
+                + "' already exist."))
+            .andExpect(jsonPath("$.status").value(409))
+            .andExpect(jsonPath("$.error").value("Conflict"))
+            .andExpect(jsonPath("$.path").value("/students"));
 
         verify(studentService, times(1)).createStudent(any(StudentDTO.class));
         
@@ -128,8 +128,8 @@ public class StudentControllerTest {
         sampleStudent2.setId(2L);
 
         List<StudentResponse> students = Arrays.asList(
-                modelMapper.map(sampleStudent, StudentResponse.class),
-                modelMapper.map(sampleStudent2, StudentResponse.class)
+            modelMapper.map(sampleStudent, StudentResponse.class),
+            modelMapper.map(sampleStudent2, StudentResponse.class)
         );
 
         // Setup
@@ -137,11 +137,11 @@ public class StudentControllerTest {
 
         // Execute & Verify
         mockMvc.perform(get("/students"))
-                .andExpect(status().isOk())
-                .andExpect(status().is(200))
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[1].id").value(2));
+            .andExpect(status().isOk())
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$[0].id").value(1))
+            .andExpect(jsonPath("$[1].id").value(2));
 
        verify(studentService, times(1)).getAllStudents();
     }
@@ -154,10 +154,10 @@ public class StudentControllerTest {
 
         // Execute & Verify
         mockMvc.perform(get("/students/1"))
-                .andExpect(status().is(200))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("Student1"));
+            .andExpect(status().is(200))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(1))
+            .andExpect(jsonPath("$.name").value("Student1"));
 
         verify(studentService, times(1)).getStudentById(anyLong());
     }
@@ -166,17 +166,17 @@ public class StudentControllerTest {
     void getStudentById_NonExisting_ShouldReturn_404() throws Exception {
         // Setup
         when(studentService.getStudentById(anyLong()))
-                .thenThrow(new ResourceNotFoundException(999L, "Student"));
+            .thenThrow(new ResourceNotFoundException(999L, "Student"));
 
 
         // Execute & Verify
         mockMvc.perform(get("/students/999"))
-                .andExpect(status().isNotFound())
-                .andExpect(status().is(404))
-                .andExpect(jsonPath("$.message").value("Student with ID '999' not found"))
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.error").value("Not Found"))
-                .andExpect(jsonPath("$.path").value("/students/999"));
+            .andExpect(status().isNotFound())
+            .andExpect(status().is(404))
+            .andExpect(jsonPath("$.message").value("Student with ID '999' not found"))
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.error").value("Not Found"))
+            .andExpect(jsonPath("$.path").value("/students/999"));
 
         verify(studentService, times(1)).getStudentById(anyLong());
     }
@@ -186,18 +186,18 @@ public class StudentControllerTest {
 
         // Setup
         when(studentService.updateStudentById(anyLong(), any(StudentDTO.class)))
-                .thenReturn("success");
+            .thenReturn("success");
 
         // Execute
         mockMvc.perform(put("/students/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(studentDTO)))
-                .andExpect(status().isOk());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(studentDTO)))
+            .andExpect(status().isOk());
 
         // Varify
         verify(studentService, times(1)).updateStudentById(
-                anyLong(),
-                any(StudentDTO.class)
+            anyLong(),
+            any(StudentDTO.class)
         );
     }
 
@@ -206,11 +206,11 @@ public class StudentControllerTest {
 
         // Setup
         when(studentService.deleteById(anyLong()))
-                .thenReturn(anyString());
+            .thenReturn(anyString());
 
         // Execute
         mockMvc.perform(delete("/students/1"))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         // Varify
         verify(studentService, times(1)).deleteById(anyLong());

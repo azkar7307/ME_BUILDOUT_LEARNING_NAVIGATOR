@@ -26,7 +26,9 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     @PostMapping
-    public ResponseEntity<SubjectResponse> registerSubject(@Valid @RequestBody SubjectDTO subjectDTO){
+    public ResponseEntity<SubjectResponse> registerSubject(
+        @Valid @RequestBody SubjectDTO subjectDTO
+    ) {
         log.info("Request received for registering a subject");
         SubjectResponse savedSubject = subjectService.registerSubject(subjectDTO);
         log.info("Subject registered successfully with id: {}", savedSubject.getId());
@@ -50,7 +52,10 @@ public class SubjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateSubject(@PathVariable Long id, @Valid @RequestBody SubjectDTO subjectDTO) {
+    public ResponseEntity<String> updateSubject(
+        @PathVariable Long id, 
+        @Valid @RequestBody SubjectDTO subjectDTO
+    ) {
         log.info("Request received for updating a subject with id {}", id);
         String response = subjectService.updateSubject(id, subjectDTO);
         log.info("Subject updated successfully by id: {}", id);

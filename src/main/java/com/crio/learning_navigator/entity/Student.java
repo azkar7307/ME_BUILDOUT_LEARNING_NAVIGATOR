@@ -10,34 +10,40 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.constraints.Email;
+// import jakarta.persistence.UniqueConstraint;
+// import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(
-    name="students", 
-    uniqueConstraints = {
-        @UniqueConstraint(name="unique_student_email", columnNames = {"email"})
-    }
+    name="students"
+    // uniqueConstraints = {
+    //     @UniqueConstraint(name="unique_student_email", columnNames = {"email"})
+    // }
 )
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(length = 75)
     private String name;
 
-    @Email
+    // @Email
     private String email;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -45,14 +51,14 @@ public class Student {
         joinColumns = @JoinColumn(name="student_id"),
         inverseJoinColumns = @JoinColumn(name="subject_id")
     )
-    private Set<Subject> subjects;    
+    private Set<Subject> subjects = new HashSet<>();    
     
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name="student_exam",
         joinColumns = @JoinColumn(name="student_id"),
         inverseJoinColumns = @JoinColumn(name="exam_id")
     )
-    private Set<Exam> exams; 
+    private Set<Exam> exams = new HashSet<>(); 
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

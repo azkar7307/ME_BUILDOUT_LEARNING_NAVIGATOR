@@ -11,9 +11,11 @@ import com.crio.learning_navigator.exception.ResourceNotFoundException;
 import com.crio.learning_navigator.repository.SubjectRepository;
 import com.crio.learning_navigator.service.SubjectService;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
+@Service
 public class SubjectServiceImpl implements SubjectService {
 
     private final SubjectRepository subjectRepository;
@@ -21,8 +23,8 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public SubjectResponse registerSubject(SubjectDTO subjectDTO) {
-        if (subjectRepository.existsByNameIgnoreCase(subjectDTO.getName())) {
-            throw new ResourceAlreadyExistException(subjectDTO.getName(), "Subject with name");
+        if (subjectRepository.existsByNameIgnoreCase(subjectDTO.getSubjectName())) {
+            throw new ResourceAlreadyExistException(subjectDTO.getSubjectName(), "Subject with name");
         }
         Subject subject = modelMapper.map(subjectDTO, Subject.class);
         Subject savedSubject = subjectRepository.save(subject);
@@ -35,14 +37,14 @@ public class SubjectServiceImpl implements SubjectService {
         List<Subject> subjects = subjectRepository.findAll();
         log.info("Fetched all subjects from db");
         return subjects.stream()
-                .map(subject -> modelMapper.map(subject, SubjectResponse.class))
-                .toList();
+            .map(subject -> modelMapper.map(subject, SubjectResponse.class))
+            .toList();
     }
 
     @Override
     public SubjectResponse getSubjectById(Long id) {
         Subject subject = subjectRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(id, "Subject")
+            () -> new ResourceNotFoundException(id, "Subject")
         );
         log.info("Fetched subject from db with id: {}", id);
         return modelMapper.map(subject, SubjectResponse.class);
@@ -50,15 +52,17 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public String updateSubject(Long id, SubjectDTO subjectToUpdate) {
-        if (subjectRepository.existsByNameIgnoreCase(subjectToUpdate.getName())) {
-            throw new ResourceAlreadyExistException(subjectToUpdate.getName(), "Subject with name");
+        if (subjectRepository.existsByNameIgnoreCase(subjectToUpdate.getSubjectName())) {
+            throw new ResourceAlreadyExistException(
+                subjectToUpdate.getSubjectName(), 
+                "Subject with name");
         }
 
         Subject subject = subjectRepository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException(id, "Subject")
         );
-        log.info("Fetched subject from db for update with id: {}", id);
-        subject.setName(subjectToUpdate.getName());
+        log.info("Fetched subject from db to update with id: {}", id);
+        subject.setName(subjectToUpdate.getSubjectName());
         subjectRepository.save(subject);
         return "Subject with id '" + id + "' updated successfully.";
     }

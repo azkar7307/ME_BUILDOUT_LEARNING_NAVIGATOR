@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
 public class StudentNotEnrolledInSubjectException extends RuntimeException{
-  public StudentNotEnrolledInSubjectException(Long studentId, String subject) {
-    super("Student with student id '" + studentId + "' not enrolled in the subject '" + subject + "'!!!");
-  }
+    public StudentNotEnrolledInSubjectException(String message) {
+        super(message);
+    }
 }
