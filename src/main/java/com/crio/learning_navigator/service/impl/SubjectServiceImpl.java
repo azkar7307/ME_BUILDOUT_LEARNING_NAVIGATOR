@@ -42,7 +42,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public SubjectResponse getSubjectById(Long id) {
         Subject subject = subjectRepository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException(id, "Subject")
+                () -> new ResourceNotFoundException(id, "Subject")
         );
         log.info("Fetched subject from db with id: {}", id);
         return modelMapper.map(subject, SubjectResponse.class);

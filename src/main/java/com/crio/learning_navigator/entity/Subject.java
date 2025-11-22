@@ -31,7 +31,7 @@ public class Subject {
     @ManyToMany(mappedBy = "subjects")
     private Set<Student> students;
 
-    @OneToOne(mappedBy="subject", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy="subject", cascade = CascadeType.ALL, orphanRemoval = true)
     private Exam exam;
     
     @CreationTimestamp

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import com.crio.learning_navigator.config.AppConfig;
 import com.crio.learning_navigator.dto.StudentDTO;
 import com.crio.learning_navigator.dto.response.StudentResponse;
 import com.crio.learning_navigator.entity.Student;
@@ -37,12 +39,13 @@ import org.modelmapper.ModelMapper;
 public class StudentServiceImplTest {
     @Mock
     private StudentRepository studentRepository;
+    
+    @Spy
+    private ModelMapper modelMapper = new AppConfig().modelMapper();
 
     @InjectMocks
     private StudentServiceImpl studentServiceImpl;
 
-    @Spy
-    private ModelMapper modelMapper = new ModelMapper();
 
     private StudentDTO studentDTO;
     private Student sampleStudent;
@@ -72,6 +75,7 @@ public class StudentServiceImplTest {
         // Varify
         verify(studentRepository, times(1)).findByEmail(anyString());
         verify(studentRepository, times(1)).save(any(Student.class));
+        verify(modelMapper, times(1)).map(any(Student.class), eq(StudentResponse.class));
     }
 
     @Test
@@ -89,7 +93,7 @@ public class StudentServiceImplTest {
         // Varify
         verify(studentRepository, times(1)).findByEmail(anyString());
         verify(studentRepository, never()).save(any(Student.class));
-
+        verify(modelMapper, never()).map(any(Student.class), eq(StudentResponse.class));
     }
 
     @Test
@@ -114,6 +118,7 @@ public class StudentServiceImplTest {
 
         // Varify
         verify(studentRepository, times(1)).findAll();
+        verify(modelMapper, times(2)).map(any(Student.class), eq(StudentResponse.class));
     }
 
     @Test
@@ -129,6 +134,7 @@ public class StudentServiceImplTest {
 
         // Varify
         verify(studentRepository, times(1)).findById(anyLong());
+        verify(modelMapper, times(1)).map(any(Student.class), eq(StudentResponse.class));
     }
 
     @Test
@@ -146,6 +152,7 @@ public class StudentServiceImplTest {
 
         // Varify
         verify(studentRepository, times(1)).findById(anyLong());
+        verify(modelMapper, never()).map(any(Student.class), eq(StudentResponse.class));
     }
 
     @Test

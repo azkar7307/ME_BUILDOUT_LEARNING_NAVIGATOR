@@ -7,9 +7,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import com.crio.learning_navigator.config.AppConfig;
 import com.crio.learning_navigator.dto.SubjectDTO;
 import com.crio.learning_navigator.dto.response.SubjectResponse;
 import com.crio.learning_navigator.entity.Subject;
@@ -17,7 +19,6 @@ import com.crio.learning_navigator.exception.ResourceAlreadyExistException;
 import com.crio.learning_navigator.exception.ResourceNotFoundException;
 import com.crio.learning_navigator.repository.SubjectRepository;
 import com.crio.learning_navigator.service.impl.SubjectServiceImpl;
-import org.hibernate.dialect.function.array.ArraySetUnnestFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,9 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,12 +38,13 @@ import java.util.Optional;
 public class SubjectServiceImplTest {
     @Mock
     private SubjectRepository subjectRepository;
+    
+    @Spy
+    private ModelMapper modelMapper = new AppConfig().modelMapper();
 
     @InjectMocks
     private SubjectServiceImpl subjectServiceImpl;
 
-    @Spy
-    private ModelMapper modelMapper = new ModelMapper();
 
     private SubjectDTO subjectDTO;
     private Subject sampleSubject;
@@ -67,11 +67,12 @@ public class SubjectServiceImplTest {
 
         // Execute
         SubjectResponse subjectResponse = subjectServiceImpl.registerSubject(subjectDTO);
+        assertEquals(subjectDTO.getName(), subjectResponse.getSubjectName());
 
         // Varify
-        assertEquals(subjectDTO.getName(), subjectResponse.getSubjectName());
         verify(subjectRepository, times(1)).existsByNameIgnoreCase(anyString());
         verify(subjectRepository, times(1)).save(any(Subject.class));
+        verify(modelMapper, times(1)).map(any(Subject.class), eq(SubjectResponse.class));
     }
 
     @Test
@@ -89,6 +90,7 @@ public class SubjectServiceImplTest {
         // Verify
         verify(subjectRepository, times(1)).existsByNameIgnoreCase(anyString());
         verify(subjectRepository, never()).save(any(Subject.class));
+        verify(modelMapper, never()).map(any(Subject.class), eq(SubjectResponse.class));
     }
 
     @Test
@@ -112,6 +114,7 @@ public class SubjectServiceImplTest {
 
         // Varify
         verify(subjectRepository, times(1)).findAll();
+        verify(modelMapper, times(2)).map(any(Subject.class), eq(SubjectResponse.class));
     }
 
     @Test
@@ -127,6 +130,7 @@ public class SubjectServiceImplTest {
 
         // Varify
         verify(subjectRepository, times(1)).findById(anyLong());
+        verify(modelMapper, times(1)).map(any(Subject.class), eq(SubjectResponse.class));
     }
 
     @Test
@@ -142,6 +146,7 @@ public class SubjectServiceImplTest {
 
         // Varify
         verify(subjectRepository, times(1)).findById(anyLong());
+        verify(modelMapper, never()).map(any(Subject.class), eq(SubjectResponse.class));
     }
 
     @Test
@@ -170,6 +175,7 @@ public class SubjectServiceImplTest {
         verify(subjectRepository, times(1)).findById(anyLong());
         verify(subjectRepository, times(1)).existsByNameIgnoreCase(anyString());
         verify(subjectRepository, times(1)).save(any(Subject.class));
+        verify(modelMapper, never()).map(any(Subject.class), eq(SubjectResponse.class));
     }
 
     @Test
@@ -196,6 +202,7 @@ public class SubjectServiceImplTest {
         verify(subjectRepository, never()).findById(anyLong());
         verify(subjectRepository, never()).save(any(Subject.class));
         verify(subjectRepository, times(1)).existsByNameIgnoreCase(anyString());
+        verify(modelMapper, never()).map(any(Subject.class), eq(SubjectResponse.class));
     }
 
     @Test

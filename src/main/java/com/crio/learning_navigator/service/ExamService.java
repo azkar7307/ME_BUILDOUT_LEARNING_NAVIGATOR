@@ -11,5 +11,5 @@ public interface ExamService {
 
     ExamResponse getExamById(Long id);
 
-    String deregisterExam(Long examId);
+    String deregisterExam(Long id);
 }
