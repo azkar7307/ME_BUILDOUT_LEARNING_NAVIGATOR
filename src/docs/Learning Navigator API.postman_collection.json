@@ -1,0 +1,440 @@
+{
+	"info": {
+		"_postman_id": "94213a99-9d46-4008-a5b5-0b11b1f638e7",
+		"name": "Learning Navigator API",
+		"description": "# Learning Navigator API\n\nThe Learning Navigator API provides endpoints to manage students, subjects, exams, and enrollment processes within an educational platform. It enables CRUD operations for core resources and supports workflows such as student registration, subject enrollment, and exam management.\n\n## Main Resource Groups\n\n### Students\nManage student records, including creation, retrieval, updating, and deletion of student profiles.\n\n### Subjects\nHandle subject registration, updates, retrieval, and deregistration.\n\n### Exams\nRegister exams for subjects, retrieve exam details, and manage exam records.\n\n### Enrollment\nFacilitate student enrollment in subjects and exams.\n\n## Documentation Coverage\n- All folders and requests in this collection are documented with clear descriptions, parameter details, request/response examples, and error cases.\n- Refer to each folder and request for specific documentation.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "37160902",
+		"_collection_link": "https://www.postman.com/navigation-participant-9941289/collections/collection/eskzihm/learning-navigator-api?action=share&source=collection_link&creator=37160902"
+	},
+	"item": [
+		{
+			"name": "students",
+			"item": [
+				{
+					"name": "Create Student",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"John Smith\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/students",
+						"description": "**Purpose:**\nCreates a new student record in the system.\n\n**Endpoint:**\nPOST http://localhost:8081/students\n\n**Request Body Schema (JSON):**\n```\n{\n  \"name\": \"string\" // Required. The full name of the student.\n}\n```\n\n**Example Request Body:**\n```\n{\n  \"name\": \"John Doe\"\n}\n```\n\n**Expected Response:**\n- **Status:** 201 Created\n- **Body (application/json):**\n```\n{\n  \"id\": \"integer\",                // Unique identifier for the student\n  \"name\": \"string\",                // Name of the student\n  \"email\": \"string|null\",          // Email address (nullable)\n  \"enrolledSubjects\": \"array|null\",// List of enrolled subjects (nullable)\n  \"enrolledExams\": \"array|null\"    // List of enrolled exams (nullable)\n}\n```\n\n**Example Response:**\n```\n{\n  \"id\": 5,\n  \"name\": \"John Doe\",\n  \"email\": null,\n  \"enrolledSubjects\": null,\n  \"enrolledExams\": null\n}\n```\n\n**Notes:**\n- The `name` field is required in the request body.\n- The response returns the created student object with a unique `id` and other fields, some of which may be null if not set at creation."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Student 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8081/students"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Students",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8081/students",
+						"description": "**Purpose:**\nRetrieves a list of all students from the system.\n\n**Endpoint:**\nGET http://localhost:8081/students\n\n**Query Parameters:**\nNone.\n\n**Response:**\n- **Status:** 200 OK\n- **Body:** An array of student objects. Each object contains:\n  - `id` (integer): Unique identifier for the student\n  - `name` (string): Name of the student\n  - `email` (string|null): Email address of the student (can be null)\n  - `enrolledSubjects` (array): List of subjects the student is enrolled in (empty array if none)\n  - `enrolledExams` (array): List of exams the student is enrolled in (empty array if none)\n\n**Example Response:**\n```json\n[\n  {\n    \"id\": 6,\n    \"name\": \"John Abraham\",\n    \"email\": null,\n    \"enrolledSubjects\": [],\n    \"enrolledExams\": []\n  }\n]\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8081/students/1",
+						"description": "**Purpose:**\nRetrieves detailed information about a specific student by their unique ID.\n\n**HTTP Method:**\nGET\n\n**Endpoint:**\n`/students/{id}`\n\n**Path Parameters:**\n- `id` (integer, required): The unique identifier of the student to retrieve.\n\n**Query Parameters:**\n- None.\n\n**Response:**\n- **Status Code:** 200 OK\n- **Body Format:** JSON object with the following structure:\n  - `id` (integer): The student's unique identifier.\n  - `name` (string): The student's full name.\n  - `email` (string|null): The student's email address, or null if not set.\n  - `enrolledSubjects` (array): List of subjects the student is enrolled in (empty array if none).\n  - `enrolledExams` (array): List of exams the student is enrolled in (empty array if none).\n\n**Example Response:**\n```json\n{\n  \"id\": 6,\n  \"name\": \"John Abraham\",\n  \"email\": null,\n  \"enrolledSubjects\": [],\n  \"enrolledExams\": []\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student by Id Invalid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8081/students/1",
+						"description": "**Purpose:**\nRetrieves the details of a student by their unique student ID.\n\n**Endpoint:**\n`GET /students/{studentId}`\n\n**Path Parameter:**\n- `studentId` (string or integer): The unique identifier of the student whose details are to be fetched.\n\n**Successful Response (200 OK):**\n- Returns a JSON object containing the student's details (fields depend on implementation).\n\n**Error Response (404 Not Found):**\n- If the student with the specified ID does not exist, returns a JSON object:\n  - `timestamp`: The time the error occurred.\n  - `status`: HTTP status code (404).\n  - `error`: Error type (e.g., \"Not Found\").\n  - `message`: Description of the error (e.g., \"Student with ID '99999' not found.\").\n  - `path`: The request path.\n\n**Example 404 Response:**\n```json\n{\n  \"timestamp\": \"2025-11-23T22:01:11.3038686\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Student with ID '99999' not found.\",\n  \"path\": \"/students/99999\"\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": "http://localhost:8081/students/1",
+						"description": "**Purpose:**  \nUpdate an existing student by their unique ID.\n\n**Path Parameter:**\n\n- `id` (integer, required): The unique identifier of the student to update. Example: `/students/6`\n    \n\n**Request Body:**\n\n- Content-Type: application/json\n    \n- Schema:  \n    {  \n    \"name\": \"string\"  \n    }\n    \n- Example:  \n    {  \n    \"name\": \"John Abraham\"  \n    }\n    \n\n**Expected Successful Response:**\n\n- Status: 200 OK\n    \n- Body: Confirmation message indicating the student was updated.\n    \n\n**Example Successful Response:**\n\n```\nStudent with id '6' updated successfully.\n\n ```\n\n**Error Case:**\n\n- Status: 404 Not Found\n    \n- Body: Error message if the student with the specified ID does not exist.\n    \n\n```\n{  \n\"timestamp\": \"2025-11-23T22:01:11.3038686\",  \n\"status\": 404,  \n\"error\": \"Not Found\",  \n\"message\": \"Student with ID '99999' not found.\",  \n\"path\": \"/students/99999\"  \n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student Invalid",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": "http://localhost:8081/students/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8081/students/2",
+						"description": "### DELETE /students/{id}\n\n**Purpose:**  \nDeletes a student by their unique ID.\n\n**Path Parameter:**\n\n- id (integer, required): The unique identifier of the student to delete.\n    \n\n**Request Body:**  \nNone.\n\n**Successful Response:**\n\n- Status: 200 OK\n    \n    ```\n    Student with id '{id}' deleted successfully.\n    \n     ```\n    \n\n**Error Response Example:**\n\n- Status: 404 Not Found\n    \n- Body:\n    \n    ```\n        {  \n        \"timestamp\": \"2025-11-23T22:01:11.3038686\",  \n        \"status\": 404,  \n        \"error\": \"Not Found\",  \n        \"message\": \"Student with ID '99999' not found.\",  \n        \"path\": \"/students/99999\"  \n        }\n    \n     ```\n    \n\n**Usage Example:**  \nRequest:\n\n```\nDELETE http://localhost:8081/students/5\n\n ```\n\nResponse:\n\n```\nStudent with id '5' deleted successfully.\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student Invalid",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8081/students/2"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "subjects",
+			"item": [
+				{
+					"name": "Register Subject",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects",
+						"description": "**Purpose:**\nCreates a new subject in the system.\n\n**Endpoint:**\nPOST http://localhost:8081/subjects\n\n**Request Body Schema:**\n```\n{\n  \"subjectName\": \"string\" \n}\n```\n\n**Example Request Body:**\n```\n{\n  \"subjectName\": \"Java 301\"\n}\n```\n \n\n**Successful Response (201 Created):**\n```\n{\n  \"id\": 6,\n  \"subjectName\": \"Java 301\"\n}\n```\n\n**Error Responses:**\n- 400 Bad Request: Invalid or missing subjectName\n- 409 Conflict: Subject already exists\n\n**Usage Example (cURL):**\n```\ncurl -X POST http://localhost:8081/subjects \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"subjectName\": \"Java 301\"}'\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Subject 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Subject Again",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Subjects",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects",
+						"description": "/subjects**\n\n**Purpose:**  \nRetrieves a list of all subjects available in the system.\n\n**Method:**  \nGET\n\n**URL:**  \n[http://localhost:8081/subjects](http://localhost:8081/subjects)\n\n**Request Body:**  \nNone (not required for GET requests)\n\n**Response**  \nAn array of subjects. Each subject contains:  \n`id`(integer): Unique identifier for the subject  \n`subjectName`(string): Name of the student (cannot be null/empty)\n\n**Successful Response Example:**  \nStatus: 200 OK  \nContent-Type: application/json\n\n```\n[\n  {\n    \"id\": 6,\n    \"subjectName\": \"Java 301\"\n  }\n]\n\n ```\n\n**Error Responses:**\n\n- 500 Internal Server Error: Returned if there is a server-side problem.\n    \n\n**Usage Example (cURL):**\n\n```\ncurl -X GET http://localhost:8081/subjects\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Subject by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects/2",
+						"description": "**GET /subjects/{id}**\n\n**Purpose:**\nRetrieves the details of a specific subject by its ID.\n\n**Method:**\nGET\n\n**URL:**\nhttp://localhost:8081/subjects/{id}\n\n**Request Body:**\nNone (not required for GET requests)\n\n**Successful Response Example:**\nStatus: 200 OK\nContent-Type: application/json\n\n```\n{\n  \"id\": 3,\n  \"subjectName\": \"Java 302\"\n}\n```\n\n**Error Responses:**\n- 404 Not Found: Returned if the subject with the specified ID does not exist.\n- 500 Internal Server Error: Returned if there is a server-side problem.\n\n**Usage Example (cURL):**\n```\ncurl -X GET http://localhost:8081/subjects/3\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Subject by Id Invalid",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subject",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects/2",
+						"description": "**PUT /subjects/{id}**\n\n**Purpose:**\nUpdates the details of an existing subject identified by its ID.\n\n**Method:**\nPUT\n\n**URL:**\nhttp://localhost:8081/subjects/{id}\n- Replace `{id}` with the subject's unique identifier (e.g., 3).\n\n**Request Body:**\nContent-Type: application/json\n```\n{\n  \"subjectName\": \"Java 302\"\n}\n```\n- `subjectName` (string, required): The new name for the subject.\n\n**Successful Response Example:**\nStatus: 200 OK\nContent-Type: text/plain\n```\nSubject with id '3' updated successfully.\n```\n\n**Error Responses:**\n- 400 Bad Request: Invalid input data or missing required fields.\n- 404 Not Found: No subject found with the specified ID.\n- 500 Internal Server Error: Server-side error occurred.\n\n**Usage Example (cURL):**\n```\ncurl -X PUT http://localhost:8081/subjects/3 \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"subjectName\":\"Java 302\"}'\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subject Invalid",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Deregister Subject",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects/1",
+						"description": "**DELETE /subjects/{id}**\n\n**Purpose:**\nDeletes a subject with the specified ID from the system.\n\n**Method:**\nDELETE\n\n**URL:**\nhttp://localhost:8081/subjects/{id}\n\nReplace `{id}` with the subject's unique identifier (e.g., `http://localhost:8081/subjects/5`).\n\n**Request Body:**\n\n```\nNone\n```\n\n**Successful Response Example:**\nStatus: 200 OK\nContent-Type: text/plain\n\n```\nSubject with id '5' deleted successfully.\n```\n\n**Error Responses:**\n- 404 Not Found: Subject with the specified ID does not exist.\n- 500 Internal Server Error: Server-side error occurred.\n\n**Usage Example (cURL):**\n```\ncurl -X DELETE http://localhost:8081/subjects/5 -H \"Content-Type: application/json\" -d '{\"subjectName\":\"Java 301\"}'\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Deregister Subject Invalid",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectName\": \"Java 203\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8081/subjects/999"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "student enrollment",
+			"item": [
+				{
+					"name": "Enroll in Subject",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8081/students/4/subjects/2",
+						"description": "**Purpose:**\nEnroll a student in a subject by associating the specified subject with the given student.\n\n**Method:**\nPOST\n\n**URL:**\n`/students/{studentId}/subjects/{subjectId}`\n\n**Path Parameters:**\n- `studentId` (integer, required): The unique identifier of the student to enroll.\n- `subjectId` (integer, required): The unique identifier of the subject to enroll the student in.\n\n**Request Body:**\nNone. This endpoint does not require a request body.\n\n**Successful Response (200 OK):**\n```\n{\n  \"id\": 6,\n  \"name\": \"John Abraham\",\n  \"email\": null,\n  \"enrolledSubjects\": [\n    { \"id\": 6, \"subjectName\": \"Java 301\" }\n  ],\n  \"enrolledExams\": []\n}\n```\n\n**Error Responses:**\n- `404 Not Found`: Student or subject not found.\n- `400 Bad Request`: Invalid studentId or subjectId.\n- `409 Conflict`: Student is already enrolled in the subject.\n\n**Usage Example:**\n```\ncurl -X POST http://localhost:8081/students/6/subjects/6\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll in Subject Again",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8081/students/4/subjects/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll in Exam",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8081/students/1/exams/2",
+						"description": "**Purpose:**  \nEnroll a student in a subject by associating the specified subject with the given student. Note: A student must be enrolled in a subject before they can enroll in an exam for that subject.\n\n**Method:**  \nPOST\n\n**URL:**  \n`/students/{studentId}/subjects/{subjectId}`\n\n**Path Parameters:**\n\n- `studentId` (integer, required): The unique identifier of the student to enroll.\n    \n- `subjectId` (integer, required): The unique identifier of the subject to enroll the student in.\n    \n\n**Request Body:**  \nNone. This endpoint does not require a request body.\n\n**Successful Response (200 Ok):**\n\n```\n{\n  \"id\": 6,\n  \"name\": \"John Abraham\",\n  \"email\": null,\n  \"enrolledSubjects\": [\n    { \"id\": 6, \"subjectName\": \"Java 301\" }\n  ],\n  \"enrolledExams\": [\n    { \"id\": 6, \"examName\": \"Java 301 Exam\" }\n  ]\n}\n\n ```\n\n**Error Responses:**\n\n- `404 Not Found`: Student or subject not found.\n    \n- `400 Bad Request`: Invalid studentId or subjectId.\n    \n- `409 Conflict`: Student is already enrolled in the Exam.\n    \n- `409 Conflict`: Student has not enrolled in the Subject corresponding to that Exam.\n    \n\n**Usage Example:**\n\n```\ncurl -X POST http://localhost:8081/students/6/subjects/6\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll in Exam Again",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8081/students/1/exams/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll in Exam Not Enroll in Subject",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8081/students/1/exams/2"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "exams",
+			"item": [
+				{
+					"name": "Register Exam",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8081/exams/subjects/2",
+						"description": "**POST /exams/subjects/{id}**\n\n**Purpose:**\nAssociates a subject (by ID) with an exam in the system.\n\n**Method:**\nPOST\n\n**URL:**\nhttp://localhost:8081/exams/subjects/6\n\n**Request Body:**\nNone (no body required for this POST request)\n\n**Successful Response Example:**\nStatus: 201 Created\nContent-Type: application/json\n\n```\n{\n  \"id\": 6,\n  \"examName\": \"Java 301 Exam\"\n}\n```\n\n**Error Responses:**\n- 404 Not Found: The subject or exam does not exist.\n- 400 Bad Request: Invalid input or association already exists.\n- 409 Conflict: Exam already exist.\n- 500 Internal Server Error: Server-side error.\n\n**Usage Example (cURL):**\n```\ncurl -X POST http://localhost:8081/exams/subjects/6\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Exam Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8081/exams/subjects/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Exam Again",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8081/exams/subjects/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Exams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"description": "**Purpose:**  \nRetrieve a list of all available exams in the system.\n\n**Method:**  \nGET\n\n**URL:**  \n`http://localhost:8081/exams`\n\n**Request Body:**  \nNone (not required for GET requests)\n\n**Successful Response Example (200 OK):**\n\n``` json\n[\n  {\n    \"id\": 6,\n    \"examName\": \"Java 301 Exam\"\n  }\n]\n\n ```\n\n**Error Responses:**\n\n- `500 Internal Server Error`: Returned if there is a server-side issue.\n    \n\n**Usage Example:**\n\n``` bash\ncurl -X GET http://localhost:8081/exams\n\n ```\n\n\n\n**Usage Notes:**\n- The response array may be empty if no exams are available.\n    \n- Use this endpoint to display or process the list of exams in your application."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Exams by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"description": "**Purpose:**\nRetrieve details of a specific exam by its unique ID.\n\n**Method:**\nGET\n\n**URL:**\n`http://localhost:8081/exams/{id}`\n\n**Path Parameter:**\n- `id` (integer, required): The unique identifier of the exam to retrieve.\n\n**Request Body:**\nNone (not required for GET requests)\n\n**Successful Response (200 OK):**\n```\n{\n  \"id\": 6,\n  \"examName\": \"Java 301 Exam\"\n}\n```\n\n**Error Responses:**\n- 404 Not Found: Exam with the specified ID does not exist.\n- 400 Bad Request: Invalid ID supplied.\n\n**Usage Example:**\n```\ncurl --request GET \"http://localhost:8081/exams/6\"\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Exams by Id Invalid",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Exams",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"description": "**Purpose:**\nDeletes an exam resource by its unique ID.\n\n**Method:**\nDELETE\n\n**URL:**\n`http://localhost:8081/exams/{id}`\n\n**Path Parameter:**\n- `id` (integer, required): The unique identifier of the exam to delete. Example: `3`\n\n**Request Body:**\nNone (not required for DELETE requests)\n\n**Successful Response:**\n- **Status:** 200 OK\n- **Body:**\n  ```\n  Exam with id '3' deleted successfully\n  ```\n\n**Error Responses:**\n- **404 Not Found:** Exam with the specified ID does not exist.\n- **400 Bad Request:** Invalid ID supplied.\n- **500 Internal Server Error:** Server encountered an unexpected condition.\n\n**Usage Example (cURL):**\n```bash\ncurl -X DELETE http://localhost:8081/exams/3\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Exams Invalid",
+					"request": {
+						"method": "DELETE",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
