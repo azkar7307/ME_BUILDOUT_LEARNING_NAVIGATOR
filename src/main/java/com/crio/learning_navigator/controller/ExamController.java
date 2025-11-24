@@ -24,7 +24,7 @@ public class ExamController {
 
     @PostMapping("/subjects/{subjectId}")
     public ResponseEntity<ExamResponse> registerExam(@PathVariable Long subjectId) {
-        log.info("Request received for registering a subject {}", subjectId);
+        log.info("Request received for register exam for subject {}", subjectId);
         ExamResponse savedExam = examService.registerExam(subjectId);
         log.info("Exam registered successfully with id: {}", savedExam.getId());
         return new ResponseEntity<>(savedExam, HttpStatus.CREATED);
@@ -32,23 +32,23 @@ public class ExamController {
 
     @GetMapping
     public ResponseEntity<List<ExamResponse>> getAllExams() {
-        log.info("Request received for fetching all subjects");
-        List<ExamResponse> subjectResponses = examService.getAllExams();
-        log.info("All subjects fetched successfully");
-        return new ResponseEntity<>(subjectResponses, HttpStatus.OK);
+        log.info("Request received for fetching all exam");
+        List<ExamResponse> examResponses = examService.getAllExams();
+        log.info("All exams fetched successfully");
+        return new ResponseEntity<>(examResponses, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ExamResponse> getExamById(@PathVariable Long id){
-        log.info("Request received for fetching subject by id: {}", id);
-        ExamResponse subjectResponse = examService.getExamById(id);
+        log.info("Request received for fetching exam by id: {}", id);
+        ExamResponse examResponse = examService.getExamById(id);
         log.info("Exam fetched successfully by id {}", id);
-        return new ResponseEntity<>(subjectResponse, HttpStatus.OK);
+        return new ResponseEntity<>(examResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deregisterExam(@PathVariable Long id) {
-        log.info("Request received for deleting a subject with id: {}", id);
+        log.info("Request received for deleting exam by id: {}", id);
         String response = examService.deregisterExam(id);
         log.info("Exam deleted successfully by id {}", id);
         return new ResponseEntity<>(response, HttpStatus.OK);

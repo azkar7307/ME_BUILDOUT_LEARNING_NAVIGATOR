@@ -3,7 +3,6 @@ package com.crio.learning_navigator.service.impl;
 import com.crio.learning_navigator.dto.StudentDTO;
 import com.crio.learning_navigator.dto.response.StudentResponse;
 import com.crio.learning_navigator.entity.Student;
-import com.crio.learning_navigator.exception.ResourceAlreadyExistException;
 import com.crio.learning_navigator.exception.ResourceNotFoundException;
 import com.crio.learning_navigator.repository.StudentRepository;
 import com.crio.learning_navigator.service.StudentService;
@@ -25,13 +24,13 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentResponse createStudent(StudentDTO studentDTO) {
         Student student = modelMapper.map(studentDTO, Student.class);
-        Student studentFromDb = studentRepository.findByEmail(student.getEmail());
-        if (studentFromDb != null) {
-            throw new ResourceAlreadyExistException(
-                Util.mask(studentFromDb.getEmail()), 
-                "Student with email"
-            );
-        }
+        // Student studentFromDb = studentRepository.findByEmail(student.getEmail());
+        // if (studentFromDb != null) {
+        //     throw new ResourceAlreadyExistException(
+        //         Util.mask(studentFromDb.getEmail()), 
+        //         "Student with email"
+        //     );
+        // }
         Student savedStudent = studentRepository.save(student);
         log.info("Student created successfully | studentId={} | emailMasked={}",
             savedStudent.getId(), Util.mask(savedStudent.getEmail()));
@@ -62,16 +61,16 @@ public class StudentServiceImpl implements StudentService {
             () -> new ResourceNotFoundException(id, "Cannot be updated because the Student")
         );
         log.info("Fetched students from db for update with id: {}", id);
-        Student student = studentRepository.findByEmail(studentDTO.getEmail());
+        // Student student = studentRepository.findByEmail(studentDTO.getEmail());
 
-        if (student != null && !student.getEmail().equals(studentToUpdate.getEmail())) {
-            throw new ResourceAlreadyExistException(Util.mask(
-                student.getEmail()), 
-                "Other Student with email");
-        }
+        // if (student != null && !student.getEmail().equals(studentToUpdate.getEmail())) {
+        //     throw new ResourceAlreadyExistException(Util.mask(
+        //         student.getEmail()), 
+        //         "Other Student with email");
+        // }
 
         studentToUpdate.setName(studentDTO.getName());
-        studentToUpdate.setEmail(studentDTO.getEmail());
+        // studentToUpdate.setEmail(studentDTO.getEmail());
         studentRepository.save(studentToUpdate);
         return "Student with id '" + id + "' updated successfully.";
     }

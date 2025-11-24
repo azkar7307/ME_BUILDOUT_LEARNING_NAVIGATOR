@@ -31,13 +31,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(errorResponse);
     }
 
-    // @ExceptionHandler({
-    //     ResourceAlreadyExistException.class,
-    //     StudentNotEnrolledInSubjectException.class
-    // })
-    @ExceptionHandler(ResourceAlreadyExistException.class)
+    // @ExceptionHandler(ResourceAlreadyExistException.class)
+    @ExceptionHandler({
+        ResourceAlreadyExistException.class,
+        StudentNotEnrolledInSubjectException.class
+    })
     public ResponseEntity<ErrorResponse> handleAlreadyExist(
-        ResourceAlreadyExistException ex, 
+        Exception ex, 
         WebRequest request
     ) {
         HttpStatus status = HttpStatus.CONFLICT;

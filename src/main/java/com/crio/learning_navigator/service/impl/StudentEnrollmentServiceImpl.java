@@ -34,11 +34,11 @@ public class StudentEnrollmentServiceImpl implements StudentEnrollmentService {
         Student student = studentRepository.findById(studentId).orElseThrow(
             () -> new ResourceNotFoundException(
                 studentId,
-                "Cannot be updated because the Student")
+                "Student cannot enroll in exam/subject because the because the student")
         );
         log.info("Fetched a student with Id '{}' from db for enrolling in a subject", studentId);
         Subject subject = subjectRepository.findById(subjectId).orElseThrow(
-            () -> new ResourceNotFoundException(subjectId, "Subject with name")
+            () -> new ResourceNotFoundException(subjectId, "Subject")
         );
         log.info("Fetched subject to be enrolled from db with id '{}' ", subjectId);
         
@@ -66,11 +66,11 @@ public class StudentEnrollmentServiceImpl implements StudentEnrollmentService {
         Student student = studentRepository.findById(studentId).orElseThrow(
             () -> new ResourceNotFoundException(
                 studentId, 
-                "Cannot be updated because the Student")
+                "Student cannot enroll in exam/subject because the Student")
         );
         log.info("Fetched a student with Id '{}' from db for enrolling in a exam", studentId);
         Exam exam = examRepository.findById(examId).orElseThrow(
-            () -> new ResourceNotFoundException(examId, "Cannot be updated because the exam")
+            () -> new ResourceNotFoundException(examId, "Exam")
         );
 
         if (student.getExams().contains(exam)) {

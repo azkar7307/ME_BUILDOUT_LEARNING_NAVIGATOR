@@ -28,7 +28,7 @@ public class ExamServiceImpl implements ExamService {
     @Transactional
     public ExamResponse registerExam(Long subjectId) {
         Subject subject = subjectRepository.findById(subjectId).orElseThrow(
-                () -> new ResourceNotFoundException(subjectId, "Subject with name")
+                () -> new ResourceNotFoundException(subjectId, "Subject")
         );
         log.info("Fetched subject from db with id: {}", subjectId);
         if (subject.getExam() != null) {
@@ -58,7 +58,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamResponse getExamById(Long id) {
         Exam exam = examRepository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException(id, "Subject")
+            () -> new ResourceNotFoundException(id, "Exam")
         );
         log.info("Fetched exam from db with id: {}", id);
         ExamResponse examResponse =  modelMapper.map(exam, ExamResponse.class);
